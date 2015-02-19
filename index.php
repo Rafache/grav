@@ -11,6 +11,9 @@ if (!is_file($autoload)) {
     exit('Please run: <i>bin/grav install</i>');
 }
 
+
+
+
 use Grav\Common\Grav;
 
 // Register the auto-loader.
