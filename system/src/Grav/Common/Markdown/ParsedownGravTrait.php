@@ -19,7 +19,7 @@ trait ParsedownGravTrait
     protected $pages_dir;
     protected $special_chars;
 
-    protected $twig_link_regex = '/\!*\[(?:.*)\]\(([{{|{%|{#].*[#}|%}|}}])\)/';
+    protected $twig_link_regex = '/\!*\[(?:.*)\]\((\{([\{%#])\s*(.*?)\s*(?:\2|\})\})\)/';
 
     /**
      * Initialiazation function to setup key variables needed by the MarkdownGravLinkTrait
@@ -72,7 +72,7 @@ trait ParsedownGravTrait
 
     protected function inlineSpecialCharacter($Excerpt)
     {
-        if ($Excerpt['text'][0] === '&' and ! preg_match('/^&#?\w+;/', $Excerpt['text'])) {
+        if ($Excerpt['text'][0] === '&' && ! preg_match('/^&#?\w+;/', $Excerpt['text'])) {
             return array(
                 'markup' => '&amp;',
                 'extent' => 1,
@@ -201,7 +201,7 @@ trait ParsedownGravTrait
                     }
                 } else {
                     // not a current page media file, see if it needs converting to relative
-                    $excerpt['element']['attributes']['src'] = Uri::build_url($url);
+                    $excerpt['element']['attributes']['src'] = Uri::buildUrl($url);
                 }
             }
         }
@@ -224,14 +224,12 @@ trait ParsedownGravTrait
 
         // if this is a link
         if (isset($excerpt['element']['attributes']['href'])) {
-
             $url = parse_url(htmlspecialchars_decode($excerpt['element']['attributes']['href']));
 
             // if there is no scheme, the file is local
-            if (!isset($url['scheme'])) {
-
+            if (!isset($url['scheme']) and (count($url) > 0)) {
                 // convert the URl is required
-                $excerpt['element']['attributes']['href'] = $this->convertUrl(Uri::build_url($url));
+                $excerpt['element']['attributes']['href'] = $this->convertUrl(Uri::buildUrl($url));
             }
         }
 
